@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        
+        /* The flexbox layout is crucial here. It allows us to dynamically reorder items using the CSS 'order' property */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .widget {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .widget:hover {
+            transform: scale(1.02);
+            background-color: #eef2ff;
+        }
+
+        .click-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Self-Organizing Dashboard</h2>
+    <p>Simulate using the tools below by clicking on them. The system will adapt to your preferences by moving your most frequently used tools to the top of the screen.</p>
+
+    <div class="dashboard" id="dashboard">
+        <div class="widget" data-id="widgetA" style="order: 0;">
+            <strong>Email Client</strong>
+            <span class="click-badge">Uses: <span class="count">0</span></span>
+        </div>
+        <div class="widget" data-id="widgetB" style="order: 0;">
+            <strong>Calendar</strong>
+            <span class="click-badge">Uses: <span class="count">0</span></span>
+        </div>
+        <div class="widget" data-id="widgetC" style="order: 0;">
+            <strong>Project Tracker</strong>
+            <span class="click-badge">Uses: <span class="count">0</span></span>
+        </div>
+        <div class="widget" data-id="widgetD" style="order: 0;">
+            <strong>Data Analytics</strong>
+            <span class="click-badge">Uses: <span class="count">0</span></span>
+        </div>
+    </div>
+
+    <script>
+        // Dictionary to track how many times each widget is interacted with
+        const interactionCounts = {
+            widgetA: 0,
+            widgetB: 0,
+            widgetC: 0,
+            widgetD: 0
+        };
+
+        // Select all widgets and add event listeners
+        document.querySelectorAll('.widget').forEach(widget => {
+            widget.addEventListener('click', function() {
+                
+                // 1. Identify which widget was clicked
+                const widgetId = this.getAttribute('data-id');
+                
+                // 2. Increment the interaction count for that specific widget
+                interactionCounts[widgetId]++;
+                
+                // 3. Update the visual text showing the usage count
+                this.querySelector('.count').innerText = interactionCounts[widgetId];
+                
+                // 4. Trigger the adaptation mechanism
+                adaptInterface();
+            });
+        });
+
+        // The core adaptation function
+        function adaptInterface() {
+            document.querySelectorAll('.widget').forEach(widget => {
+                const widgetId = widget.getAttribute('data-id');
+                const count = interactionCounts[widgetId];
+                
+                // By making the order negative, higher counts float to the top of the flex container
+                widget.style.order = -count;
+            });
+        }
+    </script>
+</body>
+</html>
